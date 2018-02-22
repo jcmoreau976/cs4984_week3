@@ -2,6 +2,8 @@
 require_once('../../../private/initialize.php');
 ?>
 
+<?php require_login(); ?>
+
 <?php $page_title = 'Staff: Salespeople'; ?>
 <?php include(SHARED_PATH . '/staff_header.php'); ?>
 

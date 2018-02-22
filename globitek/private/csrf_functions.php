@@ -9,7 +9,8 @@
   // Returns HTML for a hidden form input with a CSRF token as the value
   function csrf_token_tag() {
     // TODO needs to set a token and put in an HTML tag
-    return '<input type="TODO" name="TODO" value="TODO" />';
+    $token = create_csrf_token();
+    return '<input type="hidden" name="csrf_token" value='.$token.' />';
   }
 
   // Returns true if form token matches session token, false if not.
@@ -17,6 +18,13 @@
     if(!isset($_POST['csrf_token'])) { return false; }
     if(!isset($_SESSION['csrf_token'])) { return false; }
     return ($_POST['csrf_token'] === $_SESSION['csrf_token']);
+  }
+  
+  function create_csrf_token() {
+    $token = csrf_token();
+    $_SESSION['csrf_token'] = $token;
+    $_SESSION['csrf_token_time'] = time();
+    return $token;
   }
 
   // Determines if the form token should be considered "recent"

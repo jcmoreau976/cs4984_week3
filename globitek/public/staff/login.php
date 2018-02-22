@@ -39,11 +39,11 @@ if(is_post_request()) {
         redirect_to('index.php');
       } else {
         // Username found, but password does not match.
-        $errors[] = ""; // TODO write an error message
+        $errors[] = "Incorrect password."; // TODO write an error message
       }
     } else {
       // No username found
-      $errors[] = ""; // TODO write an error message
+      $errors[] = "Username not found."; // TODO write an error message
     }
   }
 }
@@ -67,6 +67,7 @@ if(is_post_request()) {
     <input type="text" name="username" value="<?php echo $username; ?>" /><br />
     Password:<br />
     <input type="password" name="password" value="" /><br />
+    <?php echo csrf_token_tag(); ?>
     <input type="submit" name="submit" value="Submit"  />
   </form>
 

@@ -4,18 +4,26 @@
   // Also protects user from session fixation.
   function log_in_user($user) {
     // TODO Store user's ID in session
+    $_SESSION['user_id'] = $user;
     // TODO Store last login time in session
+    $_SESSION['last_login'] = time();
+    // Save user agent
+    $_SESSION['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
+    $_SESSION['logged_in'] = true;
+    session_regenerate_id();
     return true;
   }
 
   // A one-step function to destroy the current session
   function destroy_current_session() {
     // TODO destroy the session file completely
+    session_destroy();
   }
 
   // Performs all actions necessary to log out a user
   function log_out_user() {
     unset($_SESSION['user_id']);
+    unset($_SESSION['logged_in']);
     destroy_current_session();
     return true;
   }
@@ -24,20 +32,24 @@
   // request by comparing it to the user's last login time.
   function last_login_is_recent() {
     // TODO add code to determine if last login is recent
-    return true;
+    $recent_limit = 60 * 60 * 24 * 1; // 1 day
+    if(!isset($_SESSION['last_login'])) { return false; }
+    return (($_SESSION['last_login'] + $recent_limit) >= time());
   }
 
   // Checks to see if the user-agent string of the current request
   // matches the user-agent string used when the user last logged in.
   function user_agent_matches_session() {
     // TODO add code to determine if user agent matches session
-    return true;
+    if(!isset($_SESSION['user_agent'])) { return false; }
+    if(!isset($_SERVER['HTTP_USER_AGENT'])) { return false; }
+    return ($_SESSION['user_agent'] === $_SERVER['HTTP_USER_AGENT']);
   }
 
   // Inspects the session to see if it should be considered valid.
   function session_is_valid() {
     if(!last_login_is_recent()) { return false; }
-    // if(!user_agent_matches_session()) { return false; }
+    if(!user_agent_matches_session()) { return false; }
     return true;
   }
 
